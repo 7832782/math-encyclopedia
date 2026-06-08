@@ -1,0 +1,6 @@
+5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<blockquote>
+<p>集合是不能严格定义的原始概念<sup><a href="#user-content-fn-discrete" id="user-content-fnref-discrete" data-footnote-ref aria-describedby="footnote-label" class="internal internal-link alias">1</a></sup>。</p>
+</blockquote>
+<hr/>
+<h2 id="mermaid-流程图二分法求根">Mermaid 流程图：二分法求根<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true"

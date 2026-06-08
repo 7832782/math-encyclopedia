@@ -1,0 +1,20 @@
+@use "./variables.scss" as *;
+
+// put your custom CSS here!
+
+// 脚注返回箭头
+.data-footnote-backref {
+  text-decoration: none;
+  font-size: 0;
+
+  &::after {
+    font-size: 0.85rem;
+    content: " ⤴";
+    color: var(--gray);
+    transition: color 0.2s ease;
+  }
+
+  &:hover::after {
+    color: var(--secondary);
+  }
+}
