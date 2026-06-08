@@ -45,8 +45,7 @@ os.makedirs(static_dir, exist_ok=True)
 with open(os.path.join(static_dir, "graph-controls.js"), "w", encoding="utf-8") as f:
     f.write(controls)
 
-# Step 2: Inject <script> tag into all HTML pages (before first script to load early)
-script_tag = '<script src="./static/graph/graph-controls.js"></script>'
+# Step 2: Inject <script> tag into all HTML pages with depth-corrected relative path
 patched = 0
 for root, dirs, files in os.walk(public_dir):
     for f in files:
@@ -55,6 +54,10 @@ for root, dirs, files in os.walk(public_dir):
         path = os.path.join(root, f)
         with open(path, "r", encoding="utf-8") as fh:
             html = fh.read()
+        rel = os.path.relpath(path, public_dir)
+        depth = len(os.path.dirname(rel).split(os.sep)) if os.path.dirname(rel) else 0
+        prefix = "./" if depth == 0 else "../" * depth
+        script_tag = '<script src="' + prefix + 'static/graph/graph-controls.js"></script>'
         if script_tag in html:
             continue
         # Inject before </body>
@@ -135,7 +138,7 @@ if os.path.exists(tags_page):
     with open(tags_page, "r", encoding="utf-8") as f:
         html = f.read()
     # Add word cloud container before the tag list
-    cloud_html = '<div class="tag-cloud-container"></div><script src="./static/graph/d3.min.js"></script><script src="./static/tag-cloud.js"></script>'
+    cloud_html = '<div class="tag-cloud-container"></div><script src="../static/graph/d3.min.js"></script><script src="../static/tag-cloud.js"></script>'
     if "tag-cloud-container" not in html:
         # Inject after the page title
         html = html.replace("<article", cloud_html + "\n<article", 1)
@@ -151,7 +154,7 @@ print("  Tag index page added to explorer tree")
 # Step 5: Replace 标签索引 page with immediate redirect to /tags/
 tag_index_page = os.path.join(public_dir, "标签索引.html")
 if os.path.exists(tag_index_page):
-    redirect_html = '<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/tags/"><title>标签索引</title></head><body><p>正在跳转到 <a href="/tags/">标签索引</a>...</p></body></html>'
+    redirect_html = '<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./tags/"><title>标签索引</title></head><body><p>正在跳转到 <a href="./tags/">标签索引</a>...</p></body></html>'
     with open(tag_index_page, "w", encoding="utf-8") as f:
         f.write(redirect_html)
     print("  /标签索引 now redirects to /tags/ with meta refresh")
