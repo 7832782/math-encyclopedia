@@ -45,6 +45,31 @@ os.makedirs(static_dir, exist_ok=True)
 with open(os.path.join(static_dir, "graph-controls.js"), "w", encoding="utf-8") as f:
     f.write(controls)
 
+# Step 1b: Patch Fu() function in graph script to decode URI-encoded slugs
+import glob
+for script_path in glob.glob(os.path.join(public_dir, "static/scripts/script-4-*.js")):
+    with open(script_path, "r", encoding="utf-8") as f:
+        jscode = f.read()
+    old_fn = 'function Fu(u){let e=_t(ft(u,"index"),!0);return e.length===0?"/":e}'
+    new_fn = 'function Fu(u){try{u=decodeURIComponent(u)}catch(e){}let e=_t(ft(u,"index"),!0);return e.length===0?"/":e}'
+    if old_fn in jscode:
+        jscode = jscode.replace(old_fn, new_fn)
+        print(f"  Patched Fu() in {os.path.basename(script_path)}")
+    else:
+        print(f"  Fu() not found in {os.path.basename(script_path)}, trying pattern match...")
+        import re
+        match = re.search(r'function Fu\([a-z]\)\{let [a-z]=_t\(ft\([a-z],"index"\),!\d\);return [a-z]\.length===\d\?"/":[a-z]', jscode)
+        if match:
+            print(f"  Found match: {match.group()[:80]}")
+            jscode = jscode[:match.start()] + 'function Fu(u){try{u=decodeURIComponent(u)}catch(e){}let e=_t(ft(u,"index"),!0);return e.length===0?"/":e}' + jscode[match.end():]
+            print(f"  Patched Fu() (regex match)")
+    # Fix hardcoded /static/graph/ script paths
+    jscode = jscode.replace('"/static/graph/d3.min.js"', '"../graph/d3.min.js"')
+    jscode = jscode.replace('"/static/graph/pixi.js"', '"../graph/pixi.js"')
+    with open(script_path, "w", encoding="utf-8") as f:
+        f.write(jscode)
+    print(f"  Fixed /static/graph/ paths in {os.path.basename(script_path)}")
+
 # Step 2: Inject <script> tag into all HTML pages with depth-corrected relative path
 patched = 0
 for root, dirs, files in os.walk(public_dir):
