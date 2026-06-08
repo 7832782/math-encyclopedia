@@ -46,7 +46,7 @@ with open(os.path.join(static_dir, "graph-controls.js"), "w", encoding="utf-8") 
     f.write(controls)
 
 # Step 2: Inject <script> tag into all HTML pages (before first script to load early)
-script_tag = '<script src="/static/graph/graph-controls.js"></script>'
+script_tag = '<script src="./static/graph/graph-controls.js"></script>'
 patched = 0
 for root, dirs, files in os.walk(public_dir):
     for f in files:
@@ -135,7 +135,7 @@ if os.path.exists(tags_page):
     with open(tags_page, "r", encoding="utf-8") as f:
         html = f.read()
     # Add word cloud container before the tag list
-    cloud_html = '<div class="tag-cloud-container"></div><script src="/static/graph/d3.min.js"></script><script src="/static/tag-cloud.js"></script>'
+    cloud_html = '<div class="tag-cloud-container"></div><script src="./static/graph/d3.min.js"></script><script src="./static/tag-cloud.js"></script>'
     if "tag-cloud-container" not in html:
         # Inject after the page title
         html = html.replace("<article", cloud_html + "\n<article", 1)
