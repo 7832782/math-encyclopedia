@@ -1,0 +1,25 @@
+{
+  "name": "footnotes",
+  "version": "1.0.0",
+  "description": "Transform footnote headings and add popover prevention",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "quartz": {
+    "name": "footnotes",
+    "displayName": "Footnotes",
+    "category": "transformer",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 85,
+    "defaultEnabled": true,
+    "defaultOptions": {}
+  }
+}

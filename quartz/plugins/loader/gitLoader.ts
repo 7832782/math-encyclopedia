@@ -310,7 +310,12 @@ function trySymlink(target: string, linkPath: string): void {
   try {
     fs.symlinkSync(target, linkPath, "dir")
   } catch (err: unknown) {
-    if ((err as NodeJS.ErrnoException).code === "EEXIST") return
+    const code = (err as NodeJS.ErrnoException).code
+    if (code === "EEXIST") return
+    if (code === "EPERM") {
+      fs.cpSync(target, linkPath, { recursive: true, force: true })
+      return
+    }
     throw err
   }
 }
@@ -459,7 +464,16 @@ export async function installPlugin(
       console.log(styleText("cyan", `→`), `Linking ${spec.name} from ${spec.repo}...`)
     }
 
-    fs.symlinkSync(spec.repo, pluginDir, "dir")
+    try {
+      fs.symlinkSync(spec.repo, pluginDir, "dir")
+    } catch (err) {
+      // Windows may lack symlink privileges; fall back to copy
+      if ((err as NodeJS.ErrnoException).code === "EPERM") {
+        fs.cpSync(spec.repo, pluginDir, { recursive: true, force: true })
+      } else {
+        throw err
+      }
+    }
 
     if (options.verbose) {
       console.log(styleText("green", `✓`), `Linked ${spec.name}`)
