@@ -89,9 +89,6 @@ plugins:
   - source: github:quartz-community/citations
     enabled: false
     order: 85
-  - source: ./plugins/footnotes
-    enabled: true
-    order: 86
   - source: github:quartz-community/hard-line-breaks
     enabled: false
     order: 90
