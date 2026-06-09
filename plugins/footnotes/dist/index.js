@@ -29,18 +29,12 @@ const plugin = (userOpts) => {
                 }
               }
 
-              // Add data-no-popover to footnote reference links
+              // Add data-no-popover to footnote links
               if (
                 node.tagName === "a" &&
-                node.properties?.["data-footnote-ref"] !== undefined
-              ) {
-                node.properties["data-no-popover"] = "true";
-              }
-
-              // Add data-no-popover to footnote back-reference links
-              if (
-                node.tagName === "a" &&
-                node.properties?.["data-footnote-backref"] !== undefined
+                (node.properties?.["data-footnote-ref"] !== undefined ||
+                 node.properties?.["data-footnote-backref"] !== undefined ||
+                 node.properties?.href?.startsWith("#user-content-fn-"))
               ) {
                 node.properties["data-no-popover"] = "true";
               }

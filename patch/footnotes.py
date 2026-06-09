@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from common import public_dir, walk_html
 
 # Injected script: add native tooltip on hover (title attribute with cloned content)
-FOOTNOTE_HOVER_JS = """<script>(function(){document.querySelectorAll('[data-footnote-ref]').forEach(function(e){var id=e.getAttribute("href");if(id){var fn=document.querySelector(id);if(fn){var c=fn.cloneNode(true);var br=c.querySelector("[data-footnote-backref]");if(br)br.remove();e.setAttribute("title",c.textContent.trim())}}})})()</script>"""
+FOOTNOTE_HOVER_JS = """<script>(function(){document.querySelectorAll('[data-footnote-ref]').forEach(function(e){e.setAttribute("data-no-popover","true");var id=e.getAttribute("href");if(id){var fn=document.querySelector(id);if(fn){var c=fn.cloneNode(true);var br=c.querySelector("[data-footnote-backref]");if(br)br.remove();e.setAttribute("title",c.textContent.trim())}}});document.querySelectorAll('[data-footnote-backref]').forEach(function(e){e.setAttribute("data-no-popover","true")})})()</script>"""
 
 def run():
     base = public_dir()
